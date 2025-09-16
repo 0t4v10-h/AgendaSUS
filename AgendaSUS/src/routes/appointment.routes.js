@@ -1,12 +1,13 @@
 import { Router } from "express";
 import { create, findAll, findOne, update, remove } from "../controllers/appointment.controller.js";
+import authMiddleware from "../middlewares/auth.js";
 
 const router = Router();
 
-router.post("/", create);
-router.get("/", findAll);
-router.get("/:id", findOne);
-router.put("/:id", update);
-router.delete("/:id", remove);
+router.post("/", authMiddleware, create);
+router.get("/", authMiddleware, findAll);
+router.get("/:id", authMiddleware, findOne);
+router.put("/:id", authMiddleware, update);
+router.delete("/:id", authMiddleware, remove);
 
 export default router;
