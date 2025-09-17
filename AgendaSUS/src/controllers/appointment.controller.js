@@ -2,7 +2,15 @@ import { createAppointment, findAllAppointments, findAppointmentById, updateAppo
 
 export async function create(req, res) {
     try {
-        const appointment = await createAppointment(req.body);
+        const userId = req.user.id;
+        const { doctorId, date } = req.body;
+
+        const appointment = await createAppointment({
+            userId,
+            doctorId,
+            date
+        });
+
         res.status(201).json(appointment);
     } catch (error) {
         res.status(500).json({ message: error.message });
