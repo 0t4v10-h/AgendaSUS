@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import { Appointment, User, Doctor } from "../models/index.js";
 
 export async function createAppointment({ userId, doctorId, date }) {
@@ -34,4 +35,32 @@ export async function deleteAppointment(id) {
     if (!appointment) return null;
 
     return await appointment.destroy();
+}
+
+export async function findAppointmentsByUser(userId) {
+    return await Appointment.findAll({
+        where: { userId },
+        include: [
+            { model: Doctor, attributes: ["id", "name", "specialty"] }
+        ],
+        order: [["date", "ASC"]]
+    });
+}
+
+export async function findTodayQueue() {
+    const start = new Date();
+    start.setHours(0, 0, 0, 0);
+    const end = new Date();
+    end.setHours(23, 59, 59, 999);
+
+    return await Appointment.findAll({
+        where: {
+            date: { [Op.between]: [start, end] }
+        },
+        include: [
+            { model: User, attributes: ["id", "name", "email"] },
+            { model: Doctor, attributes: ["id", "name", "specialty"] }
+        ],
+        order: [["date", "ASC"]]
+    })
 }
