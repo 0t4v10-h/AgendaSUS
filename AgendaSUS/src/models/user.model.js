@@ -5,7 +5,8 @@ const User = sequelize.define("User", {
     name: {
         type: DataTypes.STRING,
         allowNull: false
-    }, email: {
+    },
+    email: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true
@@ -18,6 +19,10 @@ const User = sequelize.define("User", {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true
+    },
+    role: {
+        type: DataTypes.STRING,
+        defaultValue: "patient"
     }
 });
 
