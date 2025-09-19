@@ -1,4 +1,10 @@
-import { createDoctor, findAllDoctors, findDoctorById, updateDoctor, deleteDoctor } from "../services/doctor.service.js";
+import {
+    createDoctor,
+    findAllDoctors,
+    findDoctorById,
+    updateDoctor,
+    deleteDoctor
+} from "../services/doctor.service.js";
 
 export async function create(req, res) {
     try {

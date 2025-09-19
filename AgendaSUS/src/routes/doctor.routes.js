@@ -1,5 +1,11 @@
 import { Router } from "express";
-import { create, findAll, findOne, update, remove } from "../controllers/doctor.controller.js";
+import {
+    create,
+    findAll,
+    findOne,
+    update,
+    remove
+} from "../controllers/doctor.controller.js";
 import { authenticateToken, isAdmin } from "../middlewares/auth.js";
 
 const router = Router();
