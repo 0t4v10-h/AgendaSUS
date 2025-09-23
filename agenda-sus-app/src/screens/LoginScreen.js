@@ -8,6 +8,7 @@ import {
     Alert
 } from "react-native";
 import api from "../services/api";
+import { saveToken } from "../services/authStorage";
 
 export default function LoginScreen({ navigation }) {
     const [email, setEmail] = useState("");
@@ -16,6 +17,9 @@ export default function LoginScreen({ navigation }) {
     async function handleLogin() {
         try {
             const res = await api.post("/auth/login", { email, password });
+
+            await saveToken(res.data.token);
+
             Alert.alert("Login realizado!", `Bem-Vindo ${res.data.user.name}`);
             navigation.replace("Home");
         } catch (error) {

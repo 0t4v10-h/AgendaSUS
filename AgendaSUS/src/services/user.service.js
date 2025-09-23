@@ -27,13 +27,18 @@ export async function registerUser({ name, email, password, cpf, role }) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    return await User.create({
+    const newUser = await User.create({
         name,
         email,
         password: hashedPassword,
         cpf,
         role: role || "patient"
     });
+
+    const userSafe = newUser.toJSON();
+    delete userSafe.password;
+
+    return userSafe;
 }
 
 export async function loginUser({ email, password }) {

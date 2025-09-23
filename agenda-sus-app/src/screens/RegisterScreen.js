@@ -18,7 +18,7 @@ export default function RegisterScreen({ navigation }) {
     async function handleRegister() {
         try {
             await api.post("/auth/register", { name, email, password, cpf });
-            Alert.açert("Cadastro realizado!", "Usuário registrado com sucesso!");
+            Alert.alert("Cadastro realizado!", "Usuário registrado com sucesso!");
             navigation.navigate("Login");
         } catch (error) {
             Alert.alert("Erro", error.response?.data?.message || "Falha no registro");
