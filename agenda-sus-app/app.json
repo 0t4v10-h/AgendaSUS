@@ -2,9 +2,9 @@
   "expo": {
     "name": "agenda-sus-app",
     "slug": "agenda-sus-app",
+    "entryPoint": "./App.js",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
     "scheme": "agendasusapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
