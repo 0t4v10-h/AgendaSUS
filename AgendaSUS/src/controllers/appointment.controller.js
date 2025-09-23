@@ -13,6 +13,10 @@ export async function create(req, res) {
         const userId = req.user.id;
         const { doctorId, date } = req.body;
 
+        if (new Date(date) < new Date()) {
+            return res.status(400).json({ message: "A data da consulta não pode ser no passado" });
+        }
+
         const appointment = await createAppointment({
             userId,
             doctorId,
@@ -48,11 +52,22 @@ export async function findOne(req, res) {
 
 export async function update(req, res) {
     try {
-        const appointment = await updateAppointment(req.params.id, req.body);
+        const appointment = await findAppointmentById(req.params.id);
         if (!appointment) {
             return res.status(404).json({ message: "Agendamento não encontrado" });
         }
-        res.json(appointment);
+
+        if (appointment.userId !== req.user.id && req.user.role !== "admin") {
+            return res.status(403).json({ Message: "Você não tem permissão para alterar esse agendamento" });
+        }
+
+        if (req.body.date && new Date(req.body.date) < new Date()) {
+            return res.status(400).json({ message: "A data da consulta não pode ser no passado" });
+        }
+
+        const updated = await updateAppointment(req.params.id, req.body);
+
+        res.json(updated);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -60,10 +75,16 @@ export async function update(req, res) {
 
 export async function remove(req, res) {
     try {
-        const appointment = await deleteAppointment(req.params.id);
+        const appointment = await findAppointmentById(req.params.id);
         if (!appointment) {
             return res.status(404).json({ message: "Agendamento não encontrado" });
         }
+
+        if (appointment.userId !== req.user.id && req.user.role !== "admin") {
+            return res.status(403).json({ Message: " Vocé nao tem permissão para cancelar esse agendamento" });
+        }
+
+        await deleteAppointment(req.params.id);
         res.json({ message: "Agendamento cancelado com sucesso" });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -96,11 +117,13 @@ export async function changeStatus(req, res) {
             return res.status(400).json({ message: "Status é obrigatório" });
         }
 
-        const appointment = await updateAppointment(req.params.id, { status });
+        const appointment = await findAppointmentById(req.params.id);
         if (!appointment) {
             return res.status(404).json({ message: "Agendamento nao encontrado" });
         }
-        res.json(appointment);
+
+        const updated = await updateAppointment(req.params.id, { status });
+        res.json(updated);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
