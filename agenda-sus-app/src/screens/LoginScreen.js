@@ -17,10 +17,12 @@ export default function LoginScreen({ navigation }) {
     async function handleLogin() {
         try {
             const res = await api.post("/auth/login", { email, password });
+            const token = res.data.token;
 
-            await saveToken(res.data.token);
+            await saveToken(token);
 
             Alert.alert("Login realizado!", `Bem-Vindo ${res.data.user.name}`);
+
             navigation.replace("Home");
         } catch (error) {
             Alert.alert("Erro", error.response?.data?.message || "Falha no login");
@@ -33,12 +35,15 @@ export default function LoginScreen({ navigation }) {
             <TextInput
                 style={styles.input}
                 placeholder="Email"
+                autoCapitalize="none"
+                keyboardType="email-address"
                 value={email}
                 onChangeText={setEmail}
             />
             <TextInput
                 style={styles.input}
                 placeholder="Senha"
+                secureTextEntry
                 value={password}
                 onChangeText={setPassword}
             />
@@ -62,6 +67,8 @@ const styles = StyleSheet.create({
     input: {
         borderWidth: 1,
         marginBottom: 10,
-        borderRadius: 5
+        borderRadius: 5,
+        paddingHorizontal: 10,
+        height: 40
     }
 });
