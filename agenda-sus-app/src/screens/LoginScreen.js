@@ -8,7 +8,7 @@ import {
     Alert
 } from "react-native";
 import api from "../services/api";
-import { saveToken } from "../services/authStorage";
+import { saveToken, removeToken } from "../services/authStorage";
 
 export default function LoginScreen({ navigation }) {
     const [email, setEmail] = useState("");
@@ -19,6 +19,7 @@ export default function LoginScreen({ navigation }) {
             const res = await api.post("/auth/login", { email, password });
             const token = res.data.token;
 
+            await removeToken();
             await saveToken(token);
 
             Alert.alert("Login realizado!", `Bem-Vindo ${res.data.user.name}`);

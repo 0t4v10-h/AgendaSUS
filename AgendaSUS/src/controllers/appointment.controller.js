@@ -7,25 +7,35 @@ import {
     findAppointmentsByUser,
     findTodayQueue
 } from "../services/appointment.service.js";
+import Appointment from "../models/appointment.model.js";
+import Doctor from "../models/doctor.model.js";
 
 export async function create(req, res) {
     try {
-        const userId = req.user.id;
-        const { doctorId, date } = req.body;
+        const { tipoConsulta, ubs, date } = req.body;
 
-        if (new Date(date) < new Date()) {
-            return res.status(400).json({ message: "A data da consulta não pode ser no passado" });
+        const doctors = await Doctor.findAll();
+        if (doctors.length === 0) {
+            return res.status(400).json({ message: "Nenhum médico disponível" });
         }
 
-        const appointment = await createAppointment({
-            userId,
-            doctorId,
-            date
+        const randomDoctor = doctors[Math.floor(Math.random() * doctors.length)];
+
+        const appointment = await Appointment.create({
+            patientName: req.user.name,
+            tipoConsulta,
+            ubs,
+            date,
+            userId: req.user.id,
+            doctorId: randomDoctor.id,
         });
 
-        res.status(201).json(appointment);
+        res.status(201).json({
+            ...appointment.toJSON(),
+            doctor: randomDoctor.name,
+        });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: "Error ao criar agendamento" });
     }
 }
 

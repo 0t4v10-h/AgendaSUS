@@ -49,9 +49,9 @@ export async function loginUser({ email, password }) {
     if (!validPassword) return null;
 
     const token = jwt.sign(
-        { id: user.id, email: user.email, role: user.role },
+        { id: user.id, email: user.email, role: user.role || "patient" },
         JWT_SECRET,
-        { expiresIn: "1h" }
+        { expiresIn: "24h" }
     );
 
     return { token, user };
